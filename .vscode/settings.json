@@ -1,0 +1,23 @@
+{
+  "eslint.probe": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html",
+    "vue",
+    "markdown",
+    "svelte"
+  ],
+  "eslint.options": {
+    "ignorePath": ".gitignore"
+  },
+  "eslint.lintTask.options": ["--ignore-path", ".gitignore", "."],
+  "eslint.validate": ["svelte"],
+  "editor.formatOnSave": true,
+
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
