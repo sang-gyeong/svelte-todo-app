@@ -11,17 +11,14 @@
 </script>
 
 <div class="list-container">
-  <List />
-  <List />
   {#each currentValue as list}
-    <List title={list.title} />
+    <List title={list.title} listId={list.id} />
   {/each}
   <ListCreater />
 </div>
 
 <style>
   .list-container {
-    border: 1px solid gray;
     width: 100%;
     min-height: calc(100% - 50px);
     display: flex;

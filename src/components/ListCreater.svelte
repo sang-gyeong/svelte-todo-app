@@ -1,9 +1,16 @@
 <script lang="ts">
   import { lists } from '../store/lists.js';
+  import { createRandom } from '../utils.js';
 
-  const createList = () => {
-    lists.update(n => [...n, { title }]);
-    writable = false;
+  const addList = () => {
+    const trimmedTitle = title.trim();
+    if (!trimmedTitle.length) {
+      return;
+    }
+
+    const randomId = createRandom();
+    lists.add({ id: randomId, title });
+    offEditMode();
   };
 
   let writable = true;
@@ -13,19 +20,21 @@
     writable = false;
     title = '';
   };
+
+  const onEditMode = () => {
+    writable = true;
+  };
 </script>
 
 {#if writable}
   <div class="create-list">
-    <textarea bind:value={title} />
-    <button type="button" on:click={createList}>추가</button>
+    <textarea bind:value={title} placeholder="타이틀을 입력하세요" />
+    <button type="button" on:click={addList}>추가</button>
     <button type="button" on:click={offEditMode}>Cancel</button>
   </div>
 {:else}
-  <button
-    class="create-list-button"
-    type="button"
-    on:click={() => (writable = true)}>NEW</button
+  <button class="create-list-button" type="button" on:click={onEditMode}
+    >+</button
   >
 {/if}
 
@@ -39,10 +48,17 @@
   }
 
   .create-list-button {
-    width: 320px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #f3bc1a;
     display: flex;
     align-items: center;
-    padding: 15px;
+    border: 1px solid black;
+    box-shadow: 6px 6px 0 black;
+    font-family: 'Vitro_core';
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>
