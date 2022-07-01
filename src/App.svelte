@@ -2,14 +2,7 @@
   import ListContainer from './components/ListContainer.svelte';
 </script>
 
-<svelte:head>
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css"
-  />
-</svelte:head>
-
-<header>SVELTE TODO APP</header>
+<header>🌲 SVELTE TODO APP 🌲</header>
 <main>
   <ListContainer />
 </main>
@@ -22,18 +15,7 @@
     display: flex;
     align-items: center;
     padding: 20px;
-  }
-
-  :global(*) {
-    box-sizing: border-box;
-  }
-
-  :global(body) {
-    width: fit-content;
-    margin: 0;
-    padding: 0;
-    overflow-x: scroll;
-    overflow-y: scroll;
+    font-family: 'Vitro_core';
   }
 
   main {
@@ -46,8 +28,9 @@
 
   @font-face {
     font-family: 'Vitro_core';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/Vitro_core.woff')
-      format('woff');
+    src: url('https://cdn.jsdelivr.net/gh/webfontworld/vitro/VitroCore.woff2')
+      format('woff2');
+    font-display: fallback;
     font-weight: normal;
     font-style: normal;
   }
@@ -55,6 +38,7 @@
     font-family: '양진체';
     src: url('https://cdn.jsdelivr.net/gh/supernovice-lab/font@0.9/yangjin.woff')
       format('woff');
+    font-display: swap;
     font-weight: normal;
     font-style: normal;
   }
@@ -63,6 +47,7 @@
     font-family: 'CBNUJIKJI';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202@1.0/CBNUJIKJI.woff')
       format('woff');
+    font-display: swap;
     font-weight: normal;
     font-style: normal;
   }
