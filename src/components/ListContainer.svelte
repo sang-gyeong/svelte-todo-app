@@ -14,7 +14,7 @@
   <List />
   <List />
   {#each currentValue as list}
-    <List title="{list.title}" />
+    <List title={list.title} />
   {/each}
   <ListCreater />
 </div>

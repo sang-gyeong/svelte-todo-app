@@ -6,7 +6,7 @@
   "tabWidth": 2,
   "svelteSortOrder": "options-scripts-markup-styles",
   "trailingComma": "es5",
-  "svelteStrictMode": true,
+  "svelteStrictMode": false,
   "svelteBracketNewLine": true,
   "svelteAllowShorthand": true,
   "svelteIndentScriptAndStyle": true

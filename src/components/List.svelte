@@ -6,9 +6,9 @@
 
 <div
   class="list"
-  on:mouseleave="{() => (showEditButton = false)}"
-  on:mouseover="{() => (showEditButton = true)}"
-  on:focus="{() => (showEditButton = true)}"
+  on:mouseleave={() => (showEditButton = false)}
+  on:mouseover={() => (showEditButton = true)}
+  on:focus={() => (showEditButton = true)}
 >
   {title}
 
