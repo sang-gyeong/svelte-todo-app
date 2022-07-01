@@ -15,6 +15,7 @@
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@rollup/plugin-typescript": "^8.0.0",
     "@tsconfig/svelte": "^2.0.1",
+    "@types/lodash-es": "^4.17.6",
     "eslint": "^8.18.0",
     "eslint-plugin-svelte3": "^4.0.0",
     "prettier": "^2.7.1",
@@ -33,6 +34,7 @@
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^5.30.0",
     "@typescript-eslint/parser": "^5.30.0",
+    "lodash-es": "^4.17.21",
     "sirv-cli": "^2.0.0"
   }
 }
