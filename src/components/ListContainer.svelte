@@ -1,18 +1,12 @@
 <script lang="ts">
-  import List from './List.svelte';
   import ListCreater from './ListCreater.svelte';
-  import { lists } from '../store/lists.js';
-
-  let currentValue: any = '';
-
-  lists.subscribe(value => {
-    currentValue = value;
-  });
+  import List from './List.svelte';
+  import { lists } from '../store/lists';
 </script>
 
 <div class="list-container">
-  {#each currentValue as list}
-    <List title={list.title} listId={list.id} />
+  {#each $lists as { id: listId, title, color: listColor } (listId)}
+    <List {listId} {title} {listColor} />
   {/each}
   <ListCreater />
 </div>

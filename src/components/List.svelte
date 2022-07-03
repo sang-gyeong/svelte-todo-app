@@ -1,9 +1,14 @@
 <script lang="ts">
   import { lists } from '../store/lists';
-  export let listId = 0;
-  export let title = '';
+  import { getColorByBgColor } from '../utils';
+  import Editor from './Editor.svelte';
 
-  let showEditButton = false;
+  export let listId = '';
+  export let title = '';
+  export let listColor = '';
+
+  let isEditMode = false;
+  let listEl: HTMLElement;
 
   const deleteList = () => {
     if (
@@ -14,29 +19,59 @@
       lists.delete(listId);
     }
   };
+
+  const changeColorHandler = e => {
+    const changedColor = e.detail.color;
+
+    listEl.style.backgroundColor = changedColor;
+  };
+
+  const offEditMode = () => {
+    isEditMode = false;
+    console.log('color : ', listColor);
+
+    listEl.style.backgroundColor = listColor;
+  };
 </script>
 
 <div
-  class="list"
-  on:mouseleave={() => (showEditButton = false)}
-  on:mouseover={() => (showEditButton = true)}
-  on:focus={() => (showEditButton = true)}
+  class="list draggable"
+  style="background-color: {listColor}"
+  draggable="true"
+  bind:this={listEl}
 >
-  <p class="title">{title}</p>
-
-  {#if showEditButton}
-    <span>
-      <button type="button" class="edit-button">Edit</button>
+  {#if isEditMode}
+    <Editor
+      {listColor}
+      {listId}
+      {title}
+      on:changeColor={changeColorHandler}
+      on:offEditMode={offEditMode}
+    />
+  {:else}
+    <p class="title" style="color: {getColorByBgColor(listColor)}">
+      {title}
+    </p>
+    <div class="button-wrapper">
+      <button
+        type="button"
+        class="edit-button"
+        on:click={() => (isEditMode = true)}>Edit</button
+      >
       <button type="button" class="delete-button" on:click={deleteList}
         >DELETE</button
       >
-    </span>
+    </div>
   {/if}
 </div>
 
 <style>
   .title {
-    cursor: pointer;
+    cursor: move;
+  }
+
+  .button-wrapper {
+    display: none;
   }
 
   .list {
@@ -52,8 +87,11 @@
     flex-direction: column;
     gap: 15px;
     overflow-y: scroll;
-    font-family: 'Vitro_core';
     font-size: 20px;
+  }
+
+  .list:hover .button-wrapper {
+    display: inline;
   }
 
   .edit-button,
