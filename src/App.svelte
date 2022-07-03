@@ -14,7 +14,7 @@
     background-color: #f2f2f2;
     display: flex;
     align-items: center;
-    padding: 20px;
+    padding: 0 28px;
     font-family: 'Vitro_core';
   }
 
@@ -24,31 +24,6 @@
     height: 100vh;
     padding: 50px;
     box-sizing: border-box;
-  }
-
-  @font-face {
     font-family: 'Vitro_core';
-    src: url('https://cdn.jsdelivr.net/gh/webfontworld/vitro/VitroCore.woff2')
-      format('woff2');
-    font-display: fallback;
-    font-weight: normal;
-    font-style: normal;
-  }
-  @font-face {
-    font-family: '양진체';
-    src: url('https://cdn.jsdelivr.net/gh/supernovice-lab/font@0.9/yangjin.woff')
-      format('woff');
-    font-display: swap;
-    font-weight: normal;
-    font-style: normal;
-  }
-
-  @font-face {
-    font-family: 'CBNUJIKJI';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202@1.0/CBNUJIKJI.woff')
-      format('woff');
-    font-display: swap;
-    font-weight: normal;
-    font-style: normal;
   }
 </style>
