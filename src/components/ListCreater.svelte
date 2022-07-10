@@ -9,7 +9,7 @@
     isEditMode = true;
   };
 
-  const changeColorHandler = e => {
+  const changeColorHandler = (e: CustomEvent) => {
     const changedColor = e.detail.color;
     listColor = changedColor;
 

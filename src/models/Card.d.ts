@@ -5,6 +5,6 @@ declare namespace Card {
     listId: string;
     color?: string;
     content: string;
-    createdAt: string;
+    createdAt?: string;
   }
 }

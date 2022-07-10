@@ -4,6 +4,5 @@ declare namespace List {
     id: string;
     color?: string;
     title: string;
-    createdAt: Date;
   }
 }

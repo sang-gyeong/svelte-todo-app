@@ -2,6 +2,7 @@
   import { lists } from '../store/lists';
   import { createRandom } from '../utils';
   import { createEventDispatcher } from 'svelte';
+  import * as listService from '../api/list';
 
   export let title = '';
   export let listId = '';
@@ -12,12 +13,16 @@
   function addList() {
     const trimmedTitle = title.trim();
     if (!trimmedTitle.length) {
+      alert('내용을 최소 한글자 이상 입력해주세요');
       return;
     }
+    const id = createRandom();
 
-    const randomId = createRandom();
-    lists.add({ id: randomId, title, color: listColor, createdAt: new Date() });
-    offEditMode();
+    listService.addListItem({ id, title, color: listColor }).then(() => {
+      listId = id;
+      lists.add({ id, title, color: listColor });
+      offEditMode();
+    });
   }
 
   function offEditMode() {
@@ -25,10 +30,12 @@
     title = '';
   }
 
-  const editList = () => {
-    lists.edit(listId, title, listColor);
-    offEditMode();
-  };
+  function editList() {
+    listService.updateListItem({ listId, title, color: listColor }).then(() => {
+      lists.edit(listId, title, listColor);
+      offEditMode();
+    });
+  }
 
   function changeBgColor(event: Event) {
     const color = (event.target as HTMLInputElement).value;
@@ -76,7 +83,7 @@
   textarea {
     width: 100%;
     height: 80px;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.6);
     border: none;
   }
 

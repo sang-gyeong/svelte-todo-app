@@ -25,5 +25,6 @@
     padding: 50px;
     box-sizing: border-box;
     font-family: 'Vitro_core';
+    overflow: scroll;
   }
 </style>

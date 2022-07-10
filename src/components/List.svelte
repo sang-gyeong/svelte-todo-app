@@ -2,12 +2,14 @@
   import { lists } from '../store/lists';
   import { getColorByBgColor } from '../utils';
   import Editor from './Editor.svelte';
+  import * as listService from '../api/list';
 
   export let listId = '';
   export let title = '';
   export let listColor = '';
 
   let isEditMode = false;
+  let dragging = false;
   let listEl: HTMLElement;
 
   const deleteList = () => {
@@ -16,7 +18,9 @@
         '리스트를 포함한 카드 내용 전체가 삭제됩니다.\n정말 삭제하시겠습니까?'
       )
     ) {
-      lists.delete(listId);
+      listService.deleteList(listId).then(() => {
+        lists.delete(listId);
+      });
     }
   };
 
@@ -28,7 +32,6 @@
 
   const offEditMode = () => {
     isEditMode = false;
-    console.log('color : ', listColor);
 
     listEl.style.backgroundColor = listColor;
   };
@@ -38,6 +41,9 @@
   class="list draggable"
   style="background-color: {listColor}"
   draggable="true"
+  class:dragging
+  on:dragstart={() => (dragging = true)}
+  on:dragend={() => (dragging = false)}
   bind:this={listEl}
 >
   {#if isEditMode}
