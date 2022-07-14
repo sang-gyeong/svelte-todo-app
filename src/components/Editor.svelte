@@ -1,40 +1,31 @@
 <script lang="ts">
-  import { lists } from '../store/lists';
-  import { createRandom } from '../utils';
   import { createEventDispatcher } from 'svelte';
-  import * as listService from '../api/list';
 
-  export let title = '';
-  export let listId = '';
+  export let content = '';
+  export let id = '';
   export let listColor = '#f3bc1a';
 
   const dispatch = createEventDispatcher();
 
-  function addList() {
-    const trimmedTitle = title.trim();
-    if (!trimmedTitle.length) {
+  function addEventHandler() {
+    const trimmedContent = content.trim();
+    if (!trimmedContent.length) {
       alert('내용을 최소 한글자 이상 입력해주세요');
       return;
     }
-    const id = createRandom();
 
-    listService.addListItem({ id, title, color: listColor }).then(() => {
-      listId = id;
-      lists.add({ id, title, color: listColor });
-      offEditMode();
-    });
+    dispatch('addEvent', { content, listColor });
+    offEditMode();
   }
 
   function offEditMode() {
     dispatch('offEditMode');
-    title = '';
+    content = '';
   }
 
-  function editList() {
-    listService.updateListItem({ listId, title, color: listColor }).then(() => {
-      lists.edit(listId, title, listColor);
-      offEditMode();
-    });
+  function editEventHandler() {
+    dispatch('editEvent', { content });
+    offEditMode();
   }
 
   function changeBgColor(event: Event) {
@@ -46,9 +37,10 @@
 </script>
 
 <textarea
-  bind:value={title}
-  placeholder="타이틀을 입력하세요"
-  on:keydown={e => e.key === 'Enter' && (listId ? editList() : addList())}
+  bind:value={content}
+  placeholder="내용을 입력하세요"
+  on:keydown={e =>
+    e.key === 'Enter' && (id ? editEventHandler() : addEventHandler())}
   on:keydown={e => e.key === 'Escape' && offEditMode()}
 />
 <div class="button-wrapper">
@@ -56,10 +48,14 @@
     🎨
     <input type="color" bind:value={listColor} on:change={changeBgColor} />
   </label>
-  {#if listId}
-    <button type="button" class="edit-button" on:click={editList}>EDIT</button>
+  {#if id}
+    <button type="button" class="edit-button" on:click={editEventHandler}
+      >EDIT</button
+    >
   {:else}
-    <button type="button" class="edit-button" on:click={addList}>ADD</button>
+    <button type="button" class="edit-button" on:click={addEventHandler}
+      >ADD</button
+    >
   {/if}
   <button type="button" class="delete-button" on:click={offEditMode}
     >Cancel</button
@@ -83,7 +79,7 @@
   textarea {
     width: 100%;
     height: 80px;
-    background-color: rgba(255, 255, 255, 0.6);
+    background-color: rgba(255, 255, 255, 0.9);
     border: none;
   }
 
