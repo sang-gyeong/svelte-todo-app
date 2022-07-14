@@ -4,5 +4,6 @@ declare namespace List {
     id: string;
     color?: string;
     title: string;
+    cards?: Card.Item[];
   }
 }

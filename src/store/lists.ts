@@ -17,6 +17,35 @@ function createList() {
       ),
     delete: (listId: string) =>
       update(lists => filter(lists, list => list.id !== listId)),
+    addCard: (listId: string, card: Card.Item) =>
+      update(lists =>
+        map(lists, list =>
+          list.id === listId
+            ? { ...list, cards: [...(list.cards ?? []), card] }
+            : list
+        )
+      ),
+    deleteCard: (listId: string, cardId: string) =>
+      update(lists =>
+        map(lists, list =>
+          list.id === listId
+            ? { ...list, cards: filter(list.cards, card => card.id !== cardId) }
+            : list
+        )
+      ),
+    editCard: (listId: string, cardId: string, content: string) =>
+      update(lists =>
+        map(lists, list =>
+          list.id === listId
+            ? {
+                ...list,
+                cards: map(list.cards, card =>
+                  card.id === cardId ? { ...card, content } : card
+                ),
+              }
+            : list
+        )
+      ),
   };
 }
 
