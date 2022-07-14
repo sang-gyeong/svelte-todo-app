@@ -13,6 +13,12 @@
 
     lists.editCard(listId, cardId, content);
   }
+
+  function deleteCard() {
+    if (window.confirm('카드가 삭제됩니다.\n정말 삭제하시겠습니까?')) {
+      lists.deleteCard(listId, cardId);
+    }
+  }
 </script>
 
 {#if isEditMode}
@@ -25,12 +31,17 @@
 {:else}
   <div class="card-item">
     {content}
-    <span
-      class="material-symbols-rounded icon"
-      on:click={() => (isEditMode = true)}
-    >
-      edit
-    </span>
+    <div class="icon-wrapper">
+      <span
+        class="material-symbols-rounded icon"
+        on:click={() => (isEditMode = true)}
+      >
+        edit
+      </span>
+      <span class="material-symbols-rounded icon" on:click={deleteCard}>
+        delete
+      </span>
+    </div>
   </div>
 {/if}
 
@@ -50,8 +61,16 @@
     position: relative;
   }
 
-  .card-item:hover .icon {
-    display: block;
+  .icon-wrapper {
+    display: none;
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    align-items: center;
+  }
+
+  .card-item:hover .icon-wrapper {
+    display: flex;
   }
 
   .icon {
@@ -63,10 +82,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    position: absolute;
-    right: 8px;
-    top: 8px;
-    display: none;
     cursor: pointer;
   }
 </style>
