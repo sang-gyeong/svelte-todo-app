@@ -1,7 +1,6 @@
 <script lang="ts">
   import { createRandom } from '../utils';
   import * as listService from '../api/list';
-
   import Editor from './Editor.svelte';
   import { lists } from '../store/lists';
 
@@ -11,8 +10,8 @@
 
   function changeColorHandler(e: CustomEvent) {
     const changedColor = e.detail.color;
-    listColor = changedColor;
 
+    listColor = changedColor;
     createListEL.style.backgroundColor = changedColor;
   }
 

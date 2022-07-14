@@ -27,7 +27,19 @@
     });
   });
 
-  const deleteList = () => {
+  function offEditMode() {
+    isEditMode = false;
+
+    listEl.style.backgroundColor = listColor;
+  }
+
+  function changeListColor(e: CustomEvent) {
+    const changedColor = e.detail.color;
+
+    listEl.style.backgroundColor = changedColor;
+  }
+
+  function deleteList() {
     if (
       window.confirm(
         '리스트를 포함한 카드 내용 전체가 삭제됩니다.\n정말 삭제하시겠습니까?'
@@ -37,19 +49,7 @@
         lists.delete(listId);
       });
     }
-  };
-
-  const changeColorHandler = e => {
-    const changedColor = e.detail.color;
-
-    listEl.style.backgroundColor = changedColor;
-  };
-
-  const offEditMode = () => {
-    isEditMode = false;
-
-    listEl.style.backgroundColor = listColor;
-  };
+  }
 
   function editList(e: CustomEvent) {
     const { content } = e.detail;
@@ -76,7 +76,7 @@
       {listColor}
       id={listId}
       content={title}
-      on:changeColor={changeColorHandler}
+      on:changeColor={changeListColor}
       on:offEditMode={offEditMode}
       on:editEvent={editList}
     />

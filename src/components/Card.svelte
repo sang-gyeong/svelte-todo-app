@@ -8,10 +8,6 @@
 
   let isEditMode = false;
 
-  function offEditMode() {
-    isEditMode = false;
-  }
-
   function editCard(e: CustomEvent) {
     const { content } = e.detail;
 
@@ -23,7 +19,7 @@
   <Editor
     id={cardId}
     {content}
-    on:offEditMode={offEditMode}
+    on:offEditMode={() => (isEditMode = false)}
     on:editEvent={editCard}
   />
 {:else}
@@ -45,7 +41,6 @@
     background-color: white;
     padding: 12px;
     border-radius: 4px;
-    /* border: 1px solid black; */
     box-shadow: 0.5px 2px 0 black;
     font-size: 16px;
     font-family: 'CBNUJIKJI';

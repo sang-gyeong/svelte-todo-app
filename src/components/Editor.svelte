@@ -18,21 +18,21 @@
     offEditMode();
   }
 
-  function offEditMode() {
-    dispatch('offEditMode');
-    content = '';
-  }
-
   function editEventHandler() {
     dispatch('editEvent', { content });
     offEditMode();
   }
 
-  function changeBgColor(event: Event) {
+  function colorChangeHandler(event: Event) {
     const color = (event.target as HTMLInputElement).value;
     listColor = color;
 
     dispatch('changeColor', { color });
+  }
+
+  function offEditMode() {
+    dispatch('offEditMode');
+    content = '';
   }
 </script>
 
@@ -46,7 +46,7 @@
 <div class="button-wrapper">
   <label>
     🎨
-    <input type="color" bind:value={listColor} on:change={changeBgColor} />
+    <input type="color" bind:value={listColor} on:change={colorChangeHandler} />
   </label>
   {#if id}
     <button type="button" class="edit-button" on:click={editEventHandler}
