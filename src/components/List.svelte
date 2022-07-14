@@ -1,8 +1,12 @@
 <script lang="ts">
+  import Card from './Card.svelte';
   import { lists } from '../store/lists';
   import { getColorByBgColor } from '../utils';
   import Editor from './Editor.svelte';
   import * as listService from '../api/list';
+  import { onMount } from 'svelte';
+  import { forEach } from 'lodash-es';
+  import CardCreator from './CardCreator.svelte';
 
   export let listId = '';
   export let title = '';
@@ -11,6 +15,17 @@
   let isEditMode = false;
   let dragging = false;
   let listEl: HTMLElement;
+  let cards = [];
+
+  onMount(() => {
+    lists.subscribe(_lists => {
+      forEach(_lists, list => {
+        if (list.id === listId) {
+          cards = list.cards ?? [];
+        }
+      });
+    });
+  });
 
   const deleteList = () => {
     if (
@@ -35,6 +50,16 @@
 
     listEl.style.backgroundColor = listColor;
   };
+
+  function editList(e: CustomEvent) {
+    const { content } = e.detail;
+
+    listService
+      .updateListItem({ listId, title: content, color: listColor })
+      .then(() => {
+        lists.edit(listId, content, listColor);
+      });
+  }
 </script>
 
 <div
@@ -49,31 +74,49 @@
   {#if isEditMode}
     <Editor
       {listColor}
-      {listId}
-      {title}
+      id={listId}
+      content={title}
       on:changeColor={changeColorHandler}
       on:offEditMode={offEditMode}
+      on:editEvent={editList}
     />
   {:else}
     <p class="title" style="color: {getColorByBgColor(listColor)}">
       {title}
     </p>
     <div class="button-wrapper">
-      <button
-        type="button"
-        class="edit-button"
-        on:click={() => (isEditMode = true)}>Edit</button
+      <span
+        class="material-symbols-rounded icon"
+        on:click={() => (isEditMode = true)}
       >
-      <button type="button" class="delete-button" on:click={deleteList}
-        >DELETE</button
-      >
+        edit
+      </span>
+      <span class="material-symbols-rounded icon" on:click={deleteList}>
+        delete
+      </span>
     </div>
   {/if}
+  {#each cards as { id: cardId, content } (cardId)}
+    <Card {listId} {cardId} {content} />
+  {/each}
+
+  <CardCreator {listId} />
 </div>
 
 <style>
+  .icon {
+    background-color: white;
+    opacity: 85%;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .title {
     cursor: move;
+    margin-bottom: 6px;
   }
 
   .button-wrapper {
@@ -81,9 +124,12 @@
   }
 
   .list {
+    position: relative;
     white-space: pre-wrap;
     width: 320px;
-    height: 800px;
+    height: fit-content;
+    min-height: 140px;
+    max-height: 800px;
     border-radius: 20px;
     border: 1px solid black;
     background-color: #f3bc1a;
@@ -91,29 +137,22 @@
     box-shadow: 6px 6px 0 black;
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 18px;
     overflow-y: scroll;
-    font-size: 20px;
+    font-size: 19px;
+    line-height: 135%;
   }
 
   .list:hover .button-wrapper {
-    display: inline;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
   }
 
-  .edit-button,
-  .delete-button {
-    width: 80px;
-    height: 30px;
-    font-size: 14px;
-    border: none;
-  }
-
-  .edit-button {
-    background-color: greenyellow;
-  }
-
-  .delete-button {
-    background-color: tomato;
-    color: white;
+  .button-wrapper span {
+    cursor: pointer;
   }
 </style>

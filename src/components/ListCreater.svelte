@@ -1,20 +1,31 @@
 <script lang="ts">
+  import { createRandom } from '../utils';
+  import * as listService from '../api/list';
+
   import Editor from './Editor.svelte';
+  import { lists } from '../store/lists';
 
   let isEditMode = false;
   let listColor = '#f3bc1a';
   let createListEL: HTMLElement;
 
-  const onEditMode = () => {
-    isEditMode = true;
-  };
-
-  const changeColorHandler = (e: CustomEvent) => {
+  function changeColorHandler(e: CustomEvent) {
     const changedColor = e.detail.color;
     listColor = changedColor;
 
     createListEL.style.backgroundColor = changedColor;
-  };
+  }
+
+  function addEventHandler(e: CustomEvent) {
+    const id = createRandom();
+    const { content } = e.detail;
+
+    listService
+      .addListItem({ id, title: content, color: listColor })
+      .then(() => {
+        lists.add({ id, title: content, color: listColor });
+      });
+  }
 </script>
 
 {#if isEditMode}
@@ -27,13 +38,14 @@
       {listColor}
       on:changeColor={changeColorHandler}
       on:offEditMode={() => (isEditMode = false)}
+      on:addEvent={addEventHandler}
     />
   </div>
 {:else}
   <button
     class="create-list-button"
     type="button"
-    on:click={onEditMode}
+    on:click={() => (isEditMode = true)}
     style="background-color: {listColor}">+</button
   >
 {/if}
