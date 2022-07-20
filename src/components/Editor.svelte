@@ -19,13 +19,15 @@
   }
 
   function editEventHandler() {
-    dispatch('editEvent', { content });
+    dispatch('editEvent', { content, color: listColor });
     offEditMode();
   }
 
   function colorChangeHandler(event: Event) {
+    console.log('hey');
     const color = (event.target as HTMLInputElement).value;
     listColor = color;
+    console.log('color : ', color);
 
     dispatch('changeColor', { color });
   }
@@ -88,6 +90,7 @@
     gap: 8px;
     justify-content: flex-end;
     height: 30px;
+    font-family: 'Vitro_core';
   }
 
   .edit-button,

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createRandom } from '../utils';
   import * as listService from '../api/list';
   import Editor from './Editor.svelte';
   import { lists } from '../store/lists';
@@ -16,13 +15,13 @@
   }
 
   function addEventHandler(e: CustomEvent) {
-    const id = createRandom();
     const { content } = e.detail;
 
     listService
-      .addListItem({ id, title: content, color: listColor })
-      .then(() => {
-        lists.add({ id, title: content, color: listColor });
+      .addListItem({ title: content, color: listColor })
+      .then(({ data: { listId, pos } }) => {
+        console.log('*', pos);
+        lists.add({ id: listId, title: content, color: listColor, pos });
       });
   }
 </script>

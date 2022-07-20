@@ -5,18 +5,15 @@ export async function loadLists(): Promise<any> {
 }
 
 export async function addListItem({
-  id,
   title,
   color,
 }: {
-  id: string;
   title: string;
   color: string;
 }): Promise<any> {
   return await request(`http://175.45.194.105:3000/api/list`, {
     method: 'POST',
     body: JSON.stringify({
-      id,
       title,
       color,
     }),
@@ -36,6 +33,22 @@ export async function updateListItem({
     method: 'PUT',
     body: JSON.stringify({ title, color }),
   });
+}
+
+export async function reorderListItem({
+  listId,
+  pos,
+}: {
+  listId: string;
+  pos: number;
+}): Promise<any> {
+  return await request(
+    `http://175.45.194.105:3000/api/list/reorder/${listId}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify({ pos }),
+    }
+  );
 }
 
 export async function deleteList(listId: string): Promise<any> {

@@ -1,6 +1,6 @@
 declare namespace List {
   interface Item {
-    order?: number;
+    pos?: number;
     id: string;
     color?: string;
     title: string;

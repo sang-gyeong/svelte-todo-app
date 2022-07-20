@@ -7,6 +7,7 @@
   export let content = '';
 
   let isEditMode = false;
+  let dragging = false;
 
   function editCard(e: CustomEvent) {
     const { content } = e.detail;
@@ -19,6 +20,11 @@
       lists.deleteCard(listId, cardId);
     }
   }
+
+  function dragStart(e: DragEvent) {
+    dragging = true;
+    e.dataTransfer.setData('CARD', cardId);
+  }
 </script>
 
 {#if isEditMode}
@@ -29,8 +35,15 @@
     on:editEvent={editCard}
   />
 {:else}
-  <div class="card-item">
-    {content}
+  <div
+    data-id={cardId}
+    class="card draggable"
+    draggable="true"
+    class:dragging
+    on:dragstart|self={dragStart}
+    on:dragend={() => (dragging = false)}
+  >
+    {cardId}
     <div class="icon-wrapper">
       <span
         class="material-symbols-rounded icon"
@@ -46,7 +59,7 @@
 {/if}
 
 <style>
-  .card-item {
+  .card {
     width: 100%;
     height: fit-content;
     background-color: white;
@@ -69,7 +82,7 @@
     align-items: center;
   }
 
-  .card-item:hover .icon-wrapper {
+  .card:hover .icon-wrapper {
     display: flex;
   }
 
