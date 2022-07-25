@@ -1,10 +1,5 @@
 import { writable } from 'svelte/store';
-<<<<<<< HEAD
 import { filter, map, sortBy, forEach, includes } from 'lodash-es';
-=======
-import { filter, map, findIndex, sortBy } from 'lodash-es';
-import { POS_DEFAULT_GAP } from '../consts';
->>>>>>> 14d89f455a6098d3a5595fb83f2f5995433e7781
 
 function createList() {
   const { subscribe, update, set } = writable<List.Item[]>([]);
