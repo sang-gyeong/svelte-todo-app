@@ -119,10 +119,6 @@
       content={title}
       on:changeColor={changeListColor}
       on:offEditMode={offEditMode}
-      on:editEvent={editList}
-    />
-  {:else}
-    <p class="title" style="color: {getColorByBgColor(listColor)}">
       {title}
     </p>
     <div class="button-wrapper">

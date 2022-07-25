@@ -64,5 +64,7 @@
   .list-container {
     display: flex;
     gap: 50px;
+    padding-right: 100px;
+    border: 3px solid red;
   }
 </style>
