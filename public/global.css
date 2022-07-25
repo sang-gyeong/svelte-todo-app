@@ -251,5 +251,6 @@ button:not(:disabled):active {
 }
 
 .draggable.dragging {
-  opacity: 0.5;
+  filter: brightness(75%);
+  opacity: 0.6;
 }

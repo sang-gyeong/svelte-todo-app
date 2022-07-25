@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createRandom } from '../utils';
   import * as listService from '../api/list';
   import Editor from './Editor.svelte';
   import { lists } from '../store/lists';
@@ -7,6 +6,7 @@
   let isEditMode = false;
   let listColor = '#f3bc1a';
   let createListEL: HTMLElement;
+  let dragEnter = false;
 
   function changeColorHandler(e: CustomEvent) {
     const changedColor = e.detail.color;
@@ -16,13 +16,13 @@
   }
 
   function addEventHandler(e: CustomEvent) {
-    const id = createRandom();
     const { content } = e.detail;
 
     listService
-      .addListItem({ id, title: content, color: listColor })
-      .then(() => {
-        lists.add({ id, title: content, color: listColor });
+      .addListItem({ title: content, color: listColor })
+      .then(({ data: { listId, pos } }) => {
+        console.log('*', pos);
+        lists.add({ id: listId, title: content, color: listColor, pos });
       });
   }
 </script>
@@ -44,7 +44,10 @@
   <button
     class="create-list-button"
     type="button"
+    class:drag-enter={dragEnter}
     on:click={() => (isEditMode = true)}
+    on:dragenter={() => (dragEnter = true)}
+    on:dragleave={() => (dragEnter = false)}
     style="background-color: {listColor}">+</button
   >
 {/if}
@@ -70,5 +73,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .create-list-button.drag-enter {
+    border: 100px solid white;
   }
 </style>

@@ -2,6 +2,7 @@
   import { lists } from '../store/lists';
   import { createRandom } from '../utils';
   import Editor from './Editor.svelte';
+  import * as listService from '../api/list';
 
   export let listId = '';
   let isEditMode = false;
@@ -10,24 +11,36 @@
     const id = createRandom();
     const { content } = e.detail;
 
-    lists.addCard(listId, { id, content });
+    listService
+      .addCardItem({ listId, content })
+      .then(({ data: { listId, cardId, pos } }) => {
+        lists.addCard(listId, { id: cardId, content, pos });
+      });
   }
 </script>
 
-{#if isEditMode}
-  <div>
-    <Editor
-      on:offEditMode={() => (isEditMode = false)}
-      on:addEvent={addEventHandler}
-    />
-  </div>
-{:else}
-  <div class="create-card" on:click={() => (isEditMode = true)}>
-    + create new card
-  </div>
-{/if}
+<div class="create-card-wrapper">
+  {#if isEditMode}
+    <div>
+      <Editor
+        on:offEditMode={() => (isEditMode = false)}
+        on:addEvent={addEventHandler}
+      />
+    </div>
+  {:else}
+    <div class="create-card" on:click={() => (isEditMode = true)}>
+      + create new card
+    </div>
+  {/if}
+</div>
 
 <style>
+  .create-card-wrapper {
+    font-size: 16px;
+    font-family: 'CBNUJIKJI';
+    color: black;
+  }
+
   .create-card {
     width: 100%;
     height: fit-content;
@@ -35,10 +48,7 @@
     padding: 12px;
     border-radius: 4px;
     box-shadow: 0.5px 2px 0 black;
-    font-size: 16px;
-    font-family: 'CBNUJIKJI';
     line-height: 130%;
-    color: black;
     opacity: 50%;
     cursor: pointer;
   }

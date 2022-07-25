@@ -19,7 +19,7 @@
   }
 
   function editEventHandler() {
-    dispatch('editEvent', { content });
+    dispatch('editEvent', { content, color: listColor });
     offEditMode();
   }
 
@@ -88,6 +88,7 @@
     gap: 8px;
     justify-content: flex-end;
     height: 30px;
+    font-family: 'Vitro_core';
   }
 
   .edit-button,

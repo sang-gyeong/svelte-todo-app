@@ -5,8 +5,12 @@
   import Editor from './Editor.svelte';
   import * as listService from '../api/list';
   import { onMount } from 'svelte';
-  import { forEach } from 'lodash-es';
+  import { find, findIndex, forEach, identity, includes, map } from 'lodash-es';
   import CardCreator from './CardCreator.svelte';
+  import { dropAction } from '../actions/dropAction';
+  import { POS_DEFAULT_GAP } from '../consts';
+  import { flip } from 'svelte/animate';
+  import { sineInOut } from 'svelte/easing';
 
   export let listId = '';
   export let title = '';
@@ -15,7 +19,7 @@
   let isEditMode = false;
   let dragging = false;
   let listEl: HTMLElement;
-  let cards = [];
+  let cards: Card.Item[] = [];
 
   onMount(() => {
     lists.subscribe(_lists => {
@@ -52,23 +56,60 @@
   }
 
   function editList(e: CustomEvent) {
-    const { content } = e.detail;
+    const { content, color } = e.detail;
 
+    listColor = color;
+
+    console.log('listColor : ', listColor);
     listService
       .updateListItem({ listId, title: content, color: listColor })
       .then(() => {
         lists.edit(listId, content, listColor);
       });
   }
+
+  function dragStart(e: DragEvent) {
+    dragging = true;
+    e.dataTransfer.setData('LIST', listId);
+    e.dataTransfer.effectAllowed = 'move';
+  }
+
+  function reorderCard(e: CustomEvent) {
+    const { id, afterId } = e.detail;
+    const isSameList = includes(
+      map(cards, card => card.id),
+      id
+    );
+
+    const afterIndex = findIndex(cards, { id: afterId });
+
+    let pos = 0;
+
+    if (afterIndex === 0) {
+      pos = cards[afterIndex].pos / 2;
+    } else if (afterIndex === -1) {
+      pos = cards[cards.length - 1].pos + POS_DEFAULT_GAP;
+    } else {
+      pos = (cards[afterIndex - 1].pos + cards[afterIndex].pos) / 2;
+    }
+    if (isSameList) {
+      lists.reorderCard(listId, id, pos);
+    } else {
+      lists.reorderAcross(listId, id, pos);
+    }
+  }
 </script>
 
 <div
+  data-id={listId}
   class="list draggable"
   style="background-color: {listColor}"
   draggable="true"
   class:dragging
-  on:dragstart={() => (dragging = true)}
+  on:dragstart|self={dragStart}
   on:dragend={() => (dragging = false)}
+  use:dropAction={{ dataType: 'CARD' }}
+  on:reorder={reorderCard}
   bind:this={listEl}
 >
   {#if isEditMode}
@@ -96,8 +137,11 @@
       </span>
     </div>
   {/if}
+
   {#each cards as { id: cardId, content } (cardId)}
-    <Card {listId} {cardId} {content} />
+    <div animate:flip={{ duration: 400, easing: sineInOut }}>
+      <Card {listId} {cardId} {content} />
+    </div>
   {/each}
 
   <CardCreator {listId} />
