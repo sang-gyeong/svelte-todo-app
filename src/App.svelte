@@ -12,7 +12,7 @@
     {:else}
       <button
         on:click={() =>
-          (window.location.href = `http://localhost:3000/api/auth/login`)}
+          (window.location.href = `http://175.45.194.105:3000/api/auth/login`)}
         >login</button
       >
     {/if}
