@@ -1,7 +1,8 @@
 declare namespace Card {
   interface Item {
-    pos?: number;
+    listId: string;
     id: string;
+    pos: number;
     content: string;
     createdAt?: string;
   }

@@ -1,9 +1,9 @@
 declare namespace List {
   interface Item {
-    pos?: number;
     id: string;
-    color?: string;
+    pos: number;
     title: string;
-    cards?: Card.Item[];
+    color: string;
+    createdAt?: string;
   }
 }

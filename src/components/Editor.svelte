@@ -24,10 +24,8 @@
   }
 
   function colorChangeHandler(event: Event) {
-    console.log('hey');
     const color = (event.target as HTMLInputElement).value;
     listColor = color;
-    console.log('color : ', color);
 
     dispatch('changeColor', { color });
   }

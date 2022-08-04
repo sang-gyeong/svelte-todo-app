@@ -1,31 +1,30 @@
 <script lang="ts">
   import ListContainer from './components/ListContainer.svelte';
-
-  let timer = false;
-  function handler(e: DragEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-
-    setTimeout(() => {
-      timer = true;
-    }, 3000);
-  }
-
-  function dragend(e) {
-    console.log('drop!');
-    timer = false;
-  }
+  import { user } from './store/user';
 </script>
 
-<header>🌲 SVELTE TODO APP 🌲</header>
-<svelte:window on:drop={dragend} />
+<header>
+  <span>🌲 SVELTE TODO APP 🌲</span>
+  <div class="profile">
+    {#if $user?.nickname?.length}
+      <span>{$user.nickname}</span>
+      <img class="profile-image" alt="profile-image" src={$user.profileURL} />
+    {:else}
+      <button
+        on:click={() =>
+          (window.location.href = `http://localhost:3000/api/auth/login`)}
+        >login</button
+      >
+    {/if}
+  </div>
+</header>
+
 <main>
   <ListContainer />
-  {#if timer}
-    <button type="button" class="floating-delete-button"
-      ><span class="material-symbols-outlined"> delete </span></button
-    >
-  {/if}
+
+  <!-- <button type="button" class="floating-delete-button"
+    ><span class="material-symbols-outlined"> delete </span></button
+  > -->
 </main>
 
 <style>
@@ -35,7 +34,8 @@
     background-color: #f2f2f2;
     display: flex;
     align-items: center;
-    padding: 0 28px;
+    justify-content: space-between;
+    padding: 0 100px 0 50px;
     font-family: 'Vitro_core';
   }
 
@@ -50,7 +50,7 @@
     position: relative;
   }
 
-  .floating-delete-button {
+  /* .floating-delete-button {
     position: fixed;
     left: 0;
     right: 0;
@@ -66,5 +66,16 @@
     background-color: tomato;
     border: 2px solid white;
     font-size: 60px;
+  } */
+
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  .profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
   }
 </style>

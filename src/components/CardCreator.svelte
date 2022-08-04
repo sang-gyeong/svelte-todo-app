@@ -1,20 +1,18 @@
 <script lang="ts">
-  import { lists } from '../store/lists';
-  import { createRandom } from '../utils';
   import Editor from './Editor.svelte';
   import * as listService from '../api/list';
+  import { cards } from '../store/cards';
 
   export let listId = '';
   let isEditMode = false;
 
   function addEventHandler(e: CustomEvent) {
-    const id = createRandom();
     const { content } = e.detail;
 
     listService
       .addCardItem({ listId, content })
       .then(({ data: { listId, cardId, pos } }) => {
-        lists.addCard(listId, { id: cardId, content, pos });
+        cards.add({ id: cardId, listId, content, pos });
       });
   }
 </script>

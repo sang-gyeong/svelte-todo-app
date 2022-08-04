@@ -2,17 +2,35 @@
   import ListCreater from './ListCreater.svelte';
   import List from './List.svelte';
   import { lists } from '../store/lists';
+  import { cards } from '../store/cards';
   import { dropAction } from '../actions/dropAction';
   import { onMount } from 'svelte';
   import * as listService from '../api/list';
   import { POS_DEFAULT_GAP } from '../consts';
-  import { findIndex } from 'lodash-es';
+  import { findIndex, sortBy } from 'lodash-es';
   import { flip } from 'svelte/animate';
   import { sineInOut } from 'svelte/easing';
+  import { user } from '../store/user';
+
+  $: cardsList = $cards.reduce((acc, card) => {
+    acc[card.listId] = acc[card.listId] || [];
+    acc[card.listId].push(card);
+    acc[card.listId] = sortBy(acc[card.listId], ['pos']);
+    return acc;
+  }, {});
 
   onMount(() => {
+    listService.loadMainData().then(({ user: userData }) => {
+      user.init(userData);
+      console.log(userData);
+    });
+
     listService.loadLists().then(({ data }) => {
       lists.init(data);
+    });
+
+    listService.loadCards().then(({ data }) => {
+      cards.init(data);
     });
   });
 
@@ -31,26 +49,24 @@
     }
 
     listService.reorderListItem({ listId: id, pos }).then(() => {
-      lists.reorderList(id, pos);
+      lists.reorder(id, pos);
     });
   }
 </script>
 
 <div class="wrapper">
-  {#if $lists.length}
-    <div
-      class="list-container"
-      use:dropAction={{ dataType: 'LIST' }}
-      on:reorder={reorderList}
-    >
-      {#each $lists as { id: listId, title, color: listColor } (listId)}
-        <div animate:flip={{ duration: 400, easing: sineInOut }}>
-          <List {listId} {title} {listColor} />
-        </div>
-      {/each}
-    </div>
-  {/if}
-  <ListCreater />
+  <div
+    class="list-container"
+    use:dropAction={{ dataType: 'LIST' }}
+    on:reorder={reorderList}
+  >
+    {#each $lists as { id: listId, title, color: listColor } (listId)}
+      <div animate:flip={{ duration: 400, easing: sineInOut }}>
+        <List {listId} {title} {listColor} cardList={cardsList[listId] ?? []} />
+      </div>
+    {/each}
+    <ListCreater />
+  </div>
 </div>
 
 <style>
@@ -64,6 +80,7 @@
   .list-container {
     display: flex;
     gap: 50px;
-    padding-right: 100px;
+
+    width: calc(100vw - 100px);
   }
 </style>

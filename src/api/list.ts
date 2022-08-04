@@ -1,7 +1,15 @@
 import { request } from './api';
 
+export async function loadMainData(): Promise<any> {
+  return await request('http://175.45.194.105:3000/api/main');
+}
+
 export async function loadLists(): Promise<any> {
   return await request('http://175.45.194.105:3000/api/list');
+}
+
+export async function loadCards(): Promise<any> {
+  return await request('http://175.45.194.105:3000/api/card');
 }
 
 export async function addListItem({
@@ -69,6 +77,22 @@ export async function addCardItem({
     body: JSON.stringify({
       listId,
       content,
+    }),
+  });
+}
+
+export async function addListWithCard({
+  cardId,
+  color,
+}: {
+  cardId: string;
+  color: string;
+}): Promise<any> {
+  return await request(`http://175.45.194.105:3000/api/list/copy`, {
+    method: 'POST',
+    body: JSON.stringify({
+      cardId,
+      color,
     }),
   });
 }

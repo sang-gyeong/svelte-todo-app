@@ -1,4 +1,4 @@
-type DataType = 'LIST' | 'CARD';
+export type DataType = 'LIST' | 'CARD';
 
 export function dropAction(
   node: HTMLElement,
@@ -20,7 +20,6 @@ export function dropAction(
     const afterId = afterEl?.dataset?.id;
 
     node.dispatchEvent(new CustomEvent('reorder', { detail: { id, afterId } }));
-    console.log('id : ', id, ' / afterId : ', afterId);
   };
 
   node.addEventListener('drop', dropHandler);

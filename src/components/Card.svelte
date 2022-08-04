@@ -1,44 +1,38 @@
 <script lang="ts">
   import Editor from './Editor.svelte';
-  import { lists } from '../store/lists';
+
   import { quintOut } from 'svelte/easing';
   import { crossfade } from 'svelte/transition';
+  import { cards } from '../store/cards';
 
-  export let listId = '';
   export let cardId = '';
   export let content = '';
 
   let isEditMode = false;
   let dragging = false;
 
-  const [send, receive] = crossfade({
-    duration: d => Math.sqrt(d * 200),
-
-    fallback(node, params) {
-      const style = getComputedStyle(node);
-      const transform = style.transform === 'none' ? '' : style.transform;
-
-      return {
-        duration: 600,
-        easing: quintOut,
-        css: t => `
-					transform: ${transform} scale(${t});
-					opacity: ${t}
-				`,
-      };
-    },
-  });
-
   function editCard(e: CustomEvent) {
     const { content } = e.detail;
 
-    lists.editCard(listId, cardId, content);
+    cards.edit(cardId, content);
   }
 
-  function deleteCard() {
-    if (window.confirm('카드가 삭제됩니다.\n정말 삭제하시겠습니까?')) {
-      lists.deleteCard(listId, cardId);
-    }
+  function clickDelete() {
+    deleteCard(cardId);
+  }
+
+  function drop(e: DragEvent) {
+    const cardId = e.dataTransfer.getData('CARD');
+
+    deleteCard(cardId);
+  }
+
+  function deleteCard(cardId: string) {
+    // if (window.confirm('카드가 삭제됩니다.\n정말 삭제하시겠습니까?')) {
+    //   cards.delete(cardId);
+    // }
+
+    cards.delete(cardId);
   }
 
   function dragStart(e: DragEvent) {
@@ -46,6 +40,8 @@
     e.dataTransfer.setData('CARD', cardId);
   }
 </script>
+
+<svelte:window on:drop={drop} on:dragover|preventDefault />
 
 <div class="card-wrapper">
   {#if isEditMode}
@@ -63,10 +59,8 @@
       class:dragging
       on:dragstart|self={dragStart}
       on:dragend={() => (dragging = false)}
-      in:receive={{ key: cardId }}
-      out:send={{ key: cardId }}
     >
-      {cardId}
+      {content}
       <div class="icon-wrapper">
         <span
           class="material-symbols-rounded icon"
@@ -74,7 +68,7 @@
         >
           edit
         </span>
-        <span class="material-symbols-rounded icon" on:click={deleteCard}>
+        <span class="material-symbols-rounded icon" on:click={clickDelete}>
           delete
         </span>
       </div>

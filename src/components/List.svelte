@@ -4,32 +4,22 @@
   import { getColorByBgColor } from '../utils';
   import Editor from './Editor.svelte';
   import * as listService from '../api/list';
-  import { onMount } from 'svelte';
-  import { find, findIndex, forEach, identity, includes, map } from 'lodash-es';
+  import { findIndex } from 'lodash-es';
   import CardCreator from './CardCreator.svelte';
   import { dropAction } from '../actions/dropAction';
   import { POS_DEFAULT_GAP } from '../consts';
   import { flip } from 'svelte/animate';
   import { sineInOut } from 'svelte/easing';
+  import { cards } from '../store/cards';
 
   export let listId = '';
   export let title = '';
   export let listColor = '';
+  export let cardList: Card.Item[] = [];
 
   let isEditMode = false;
   let dragging = false;
   let listEl: HTMLElement;
-  let cards: Card.Item[] = [];
-
-  onMount(() => {
-    lists.subscribe(_lists => {
-      forEach(_lists, list => {
-        if (list.id === listId) {
-          cards = list.cards ?? [];
-        }
-      });
-    });
-  });
 
   function offEditMode() {
     isEditMode = false;
@@ -60,7 +50,6 @@
 
     listColor = color;
 
-    console.log('listColor : ', listColor);
     listService
       .updateListItem({ listId, title: content, color: listColor })
       .then(() => {
@@ -76,26 +65,33 @@
 
   function reorderCard(e: CustomEvent) {
     const { id, afterId } = e.detail;
-    const isSameList = includes(
-      map(cards, card => card.id),
-      id
-    );
 
-    const afterIndex = findIndex(cards, { id: afterId });
+    const afterIndex = findIndex(cardList, { id: afterId });
+    const pos = getPos(afterIndex);
 
+    cards.reorder(listId, id, pos);
+  }
+
+  function getPos(afterIndex: number): number {
     let pos = 0;
 
-    if (afterIndex === 0) {
-      pos = cards[afterIndex].pos / 2;
+    if (!cardList.length) {
+      pos = POS_DEFAULT_GAP;
+    } else if (afterIndex === 0) {
+      pos = cardList[afterIndex].pos / 2;
     } else if (afterIndex === -1) {
-      pos = cards[cards.length - 1].pos + POS_DEFAULT_GAP;
+      pos = cardList[cardList.length - 1].pos + POS_DEFAULT_GAP;
     } else {
-      pos = (cards[afterIndex - 1].pos + cards[afterIndex].pos) / 2;
+      pos = (cardList[afterIndex - 1].pos + cardList[afterIndex].pos) / 2;
     }
-    if (isSameList) {
-      lists.reorderCard(listId, id, pos);
-    } else {
-      lists.reorderAcross(listId, id, pos);
+    return pos;
+  }
+
+  function drop(e: DragEvent) {
+    const card = e.dataTransfer.getData('CARD');
+
+    if (card) {
+      e.stopPropagation();
     }
   }
 </script>
@@ -111,6 +107,7 @@
   use:dropAction={{ dataType: 'CARD' }}
   on:reorder={reorderCard}
   bind:this={listEl}
+  on:drop={drop}
 >
   {#if isEditMode}
     <Editor
@@ -138,9 +135,9 @@
     </div>
   {/if}
 
-  {#each cards as { id: cardId, content } (cardId)}
+  {#each cardList as { id: cardId, content } (cardId)}
     <div animate:flip={{ duration: 400, easing: sineInOut }}>
-      <Card {listId} {cardId} {content} />
+      <Card {cardId} {content} />
     </div>
   {/each}
 
